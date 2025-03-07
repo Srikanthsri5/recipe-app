@@ -1,12 +1,12 @@
 """
 Test the users API
 """
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-from django.urls import reverse
+from django.test import TestCase # type: ignore
+from django.contrib.auth import get_user_model # type: ignore
+from django.urls import reverse # type: ignore
 
-from rest_framework import status
-from rest_framework.test import APIClient
+from rest_framework import status # type: ignore
+from rest_framework.test import APIClient # type: ignore
 
 CREATE_USER_URL = reverse('user:create')
 TOKEN_URL = reverse('user:token')
@@ -82,6 +82,14 @@ class PublicUserApiTests(TestCase):
         create_user(email='test@example.com', password='testpass')
 
         payload = { 'email': 'test@example.com', 'password': 'wrong' }
+        res = self.client.post(TOKEN_URL, payload)
+
+        self.assertNotIn('token', res.data)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_token_email_not_found(self):
+        """Test that token is not created for non-existent user"""
+        payload = { 'email': 'test@example.com', 'password': 'testpass' }
         res = self.client.post(TOKEN_URL, payload)
 
         self.assertNotIn('token', res.data)

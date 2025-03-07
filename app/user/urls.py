@@ -1,7 +1,7 @@
 """
 URLs for user api
 """
-from django.urls import path
+from django.urls import path # type: ignore
 from user import views
 
 app_name = 'user'
